@@ -21,13 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
     mappingDiv.className = 'mapping';
 
     const keyInput = document.createElement('input');
+    keyInput.className = 'key-input';
     keyInput.placeholder = 'Key';
     keyInput.value = key;
-    keyInput.className = 'key-input';
-    const valueInput = document.createElement('input');
+
+    const valueInput = document.createElement('textarea');
+    valueInput.className = 'value-input';
     valueInput.placeholder = 'URL';
     valueInput.value = value;
-    valueInput.className = 'value-input';
 
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mappingDiv.appendChild(keyInput);
     mappingDiv.appendChild(valueInput);
     mappingDiv.appendChild(removeButton);
+
     mappingsContainer.appendChild(mappingDiv);
   }
 
