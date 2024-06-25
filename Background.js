@@ -36,7 +36,7 @@ getMappings().then((loadedMappings) => {
 
 // Listen for omnibox input
 chrome.omnibox.onInputEntered.addListener(async (text) => {
-  if (text === 'options') {
+  if (text === 'mappings') {
     chrome.runtime.openOptionsPage();
     return;
   }
