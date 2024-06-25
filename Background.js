@@ -13,23 +13,25 @@ chrome.omnibox.onInputEntered.addListener(async (text) => {
   const mappings = await getMappings();
   let newUrl = mappings[text];
 
-  // If no exact match, check for known prefixes like "j/"
   if (!newUrl) {
-    if (text.startsWith("j/")) {
-      const baseUrl = mappings["j/"];
-      const identifier = text.slice(2); // Get the identifier part after "j/"
+    const parts = text.split('/');
+    const baseKey = parts[0];
+    const identifier = parts[1] || '';  // Use an empty string if there's no second parameter
+
+    const baseUrl = mappings[`${baseKey}/`];
+
+    if (baseUrl) {
       newUrl = `${baseUrl}${identifier}`;
-    }
-    else {
+    } else {
       // Handle case where prefix is unknown
       chrome.tabs.update({ url: `https://www.google.com/search?q=${text}` });
       return;
     }
   }
+
   console.log("address to go to: " + newUrl);
   // Redirect to the new URL if it was found or constructed
   if (newUrl) {
     chrome.tabs.update({ url: newUrl });
   }
 });
-
