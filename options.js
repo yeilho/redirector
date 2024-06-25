@@ -18,14 +18,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to create a mapping input element
   function createMappingElement(key, value) {
     const mappingDiv = document.createElement('div');
+    mappingDiv.className = 'mapping';
+
     const keyInput = document.createElement('input');
     keyInput.placeholder = 'Key';
     keyInput.value = key;
+    keyInput.className = 'key-input';
     const valueInput = document.createElement('input');
     valueInput.placeholder = 'URL';
     valueInput.value = value;
+    valueInput.className = 'value-input';
+
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'Remove';
+    removeButton.onclick = () => {
+      mappingDiv.remove();
+    };
+
     mappingDiv.appendChild(keyInput);
     mappingDiv.appendChild(valueInput);
+    mappingDiv.appendChild(removeButton);
     mappingsContainer.appendChild(mappingDiv);
   }
 
@@ -37,20 +49,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Event: Save mappings
   saveMappingsBtn.addEventListener('click', () => {
     const newMappings = {};
-    const inputs = mappingsContainer.querySelectorAll('input');
-    for (let i = 0; i < inputs.length; i += 2) {
-      const key = inputs[i].value.trim();
-      const value = inputs[i + 1].value.trim();
+    const keyInputs = mappingsContainer.getElementsByClassName('key-input');
+    const valueInputs = mappingsContainer.getElementsByClassName('value-input');
+
+    for (let i = 0; i < keyInputs.length; i++) {
+      const key = keyInputs[i].value.trim();
+      const value = valueInputs[i].value.trim();
       if (key && value) {
         newMappings[key] = value;
       }
     }
+
     chrome.runtime.sendMessage({ type: 'updateMappings', mappings: newMappings }, (response) => {
       if (response.status === 'ok') {
         alert('Mappings saved successfully!');
       }
     });
   });
-    // Load the mappings when the options page is opened
+
+  // Load the mappings when the options page is opened
   loadMappings();
 });
