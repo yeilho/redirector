@@ -21,3 +21,14 @@ This Chrome extension allows users to define URL mappings. When a user enters a 
 3. **Activate Developer Mode**: Toggle the Developer Mode switch in the top right corner.
    
 4. **Load Unpacked Extension**: Click on `Load unpacked` and select the folder containing the extension files.
+
+
+## Usage
+
+1. **Manage Mappings**: 
+    - Type `mappings` into the Omnibox and press enter to open the options page, where you can view the current mappings.
+      
+2. **Use the Omnibox**: 
+    - **Open the Omnibox**: Click on the address bar or use the keyboard shortcut (usually `Ctrl` + `L` or `Cmd` + `L`).
+    - **Enter a Keyword**: Type your keyword (e.g., `google`) or a keyword with a suffix (e.g., `yt/dQw4w9WgXcQ`).
+    - **Press Enter**: The browser will navigate to the mapped or constructed URL.
