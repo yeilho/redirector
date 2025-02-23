@@ -1,15 +1,12 @@
 importScripts('jsyaml.min.js');
 
-let mappings = {};
-
 // Function to fetch and parse the YAML file
-async function getMappings() {
+async function getMappingsFromYAML() {
   try {
     const response = await fetch(chrome.runtime.getURL('mappings.yaml'));
     const yamlText = await response.text();
     const parsedYaml = jsyaml.load(yamlText);
-    console.log('Parsed YAML:', parsedYaml);
-    return parsedYaml.mappings;
+    return parsedYaml.mappings || {};
   } catch (error) {
     console.error('Error fetching or parsing mappings:', error);
     return {};
@@ -18,20 +15,21 @@ async function getMappings() {
 
 // Initialize mappings upon extension installation
 chrome.runtime.onInstalled.addListener(() => {
-  getMappings().then((loadedMappings) => {
-    mappings = loadedMappings;
-    console.log('Mappings loaded on install:', mappings);
+  getMappingsFromYAML().then((loadedMappings) => {
+    // Store initial mappings in local storage
+    chrome.storage.local.set({ mappings: loadedMappings }, () => {
+      console.log('Mappings loaded and saved on install.');
+    });
   }).catch(err => {
     console.error('Error during mapping load on install:', err);
   });
 });
 
-// Initialize mappings when the extension starts
-getMappings().then((loadedMappings) => {
-  mappings = loadedMappings;
+// Load mappings from storage on extension start
+let mappings = {};
+chrome.storage.local.get('mappings', (data) => {
+  mappings = data.mappings || {};
   console.log('Mappings loaded on start:', mappings);
-}).catch(err => {
-  console.error('Error during mapping load on start:', err);
 });
 
 // Listen for omnibox input
@@ -40,12 +38,11 @@ chrome.omnibox.onInputEntered.addListener(async (text) => {
     chrome.runtime.openOptionsPage();
     return;
   }
-
-  if (!mappings || Object.keys(mappings).length === 0) {
-    mappings = await getMappings();
-    console.log('Mappings loaded in omnibox listener:', mappings);
-  }
   
+  // Reload mappings from storage in case of changes
+  mappings = (await chrome.storage.local.get('mappings')).mappings || {};
+  console.log('Mappings loaded in omnibox listener:', mappings);
+
   let newUrl = mappings[text];
 
   if (!newUrl) {
@@ -74,9 +71,15 @@ chrome.omnibox.onInputEntered.addListener(async (text) => {
 // Handle messages for getting and updating mappings
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === 'getMappings') {
-    sendResponse(mappings);
+    chrome.storage.local.get('mappings', (data) => {
+      sendResponse(data.mappings || {});
+    });
+    return true;  // keep the messaging channel open
   } else if (msg.type === 'updateMappings') {
-    mappings = msg.mappings;
-    sendResponse({ status: 'ok' });
+    chrome.storage.local.set({ mappings: msg.mappings }, () => {
+      console.log('Mappings updated and saved.');
+      sendResponse({ status: 'ok' });
+    });
+    return true;
   }
 });
