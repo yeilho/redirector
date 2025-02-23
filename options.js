@@ -3,11 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const addMappingBtn = document.getElementById('add-mapping');
   const saveMappingsBtn = document.getElementById('save-mappings');
 
-  // Function to load mappings and populate the UI
+  // Load current mappings and populate the UI
   function loadMappings() {
     chrome.runtime.sendMessage({ type: 'getMappings' }, (response) => {
       if (response) {
-        mappingsContainer.innerHTML = '';
+        mappingsContainer.innerHTML = ''; // Clear existing elements
         Object.keys(response).forEach(key => {
           createMappingElement(key, response[key]);
         });
@@ -43,12 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
     mappingsContainer.appendChild(mappingDiv);
   }
 
-  // Event: Add new mapping
+  // Add new mapping
   addMappingBtn.addEventListener('click', () => {
     createMappingElement('', '');
   });
 
-  // Event: Save mappings
+  // Save mappings to chrome.storage.local
   saveMappingsBtn.addEventListener('click', () => {
     const newMappings = {};
     const keyInputs = mappingsContainer.getElementsByClassName('key-input');
@@ -63,12 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     chrome.runtime.sendMessage({ type: 'updateMappings', mappings: newMappings }, (response) => {
-      if (response.status === 'ok') {
+      if (response && response.status === 'ok') {
         alert('Mappings saved successfully!');
+      } else {
+        alert('Failed to save mappings. Try again.');
       }
     });
   });
 
-  // Load the mappings when the options page is opened
+  // Load mappings when the options page is opened
   loadMappings();
 });
