@@ -25,10 +25,12 @@ This Chrome extension allows users to define URL mappings. When a user enters a 
 
 ## Usage
 
-1. **Manage Mappings**: 
+1. **Use the Omnibox**: 
+    - **Open the Omnibox**: Click on the address bar or use the keyboard shortcut (usually `Ctrl` + `L` or `Cmd` + `L`).
+    - **Enter redirector mode**: Type `go` and press space bar to trigger the extension
+    - **Enter a keyword**: Enter your keyword link (e.g., `gm`) or a keyword with a suffix (e.g., `yt/abcde`).
+    - **Press Enter**: The browser will navigate to the mapped or constructed URL.
+
+2. **Manage Mappings**: 
     - Type `mappings` into the Omnibox and press enter to open the options page, where you can view the current mappings.
       
-2. **Use the Omnibox**: 
-    - **Open the Omnibox**: Click on the address bar or use the keyboard shortcut (usually `Ctrl` + `L` or `Cmd` + `L`).
-    - **Enter a Keyword**: Type your keyword (e.g., `google`) or a keyword with a suffix (e.g., `yt/dQw4w9WgXcQ`).
-    - **Press Enter**: The browser will navigate to the mapped or constructed URL.
